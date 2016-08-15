@@ -11,12 +11,14 @@
 #include "Handler.hpp"
 
 #include <iostream>
+#include <mutex>
 
 
 namespace pylogging
 {
 
 
+template<class DERIVED>
 class StreamHandler: public Handler
 {
 public:
@@ -28,17 +30,19 @@ public:
 private:
     std::ostream&  m_out;
     std::wostream& m_wout;
+
+    static std::mutex mtx; // must be static
 };
 
 
-class StdOutHandler: public StreamHandler
+class StdOutHandler: public StreamHandler<StdOutHandler>
 {
     public:
         StdOutHandler();
 };
 
 
-class StdErrHandler: public StreamHandler
+class StdErrHandler: public StreamHandler<StdErrHandler>
 {
     public:
         StdErrHandler();

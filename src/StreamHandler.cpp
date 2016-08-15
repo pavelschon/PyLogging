@@ -11,12 +11,15 @@
 namespace pylogging
 {
 
+std::mutex cout_mtx;
+std::mutex cerr_mtx;
 
 /**
  *
  *
  */
-StreamHandler::StreamHandler( std::ostream& out, std::wostream& wout ):
+template<class DERIVED>
+StreamHandler<DERIVED>::StreamHandler( std::ostream& out, std::wostream& wout ):
       Handler()
     , m_out{ out }
     , m_wout{ wout }
@@ -29,8 +32,11 @@ StreamHandler::StreamHandler( std::ostream& out, std::wostream& wout ):
  *
  *
  */
-HandlerPtr StreamHandler::log( const string_type&  str, const unsigned short level )
+template<class DERIVED>
+HandlerPtr StreamHandler<DERIVED>::log( const string_type&  str, const unsigned short level )
 {
+    const std::unique_lock<decltype( mtx )>( mtx );
+
     if( level >= m_level )
     {
         m_out << str << '\n';
@@ -44,8 +50,11 @@ HandlerPtr StreamHandler::log( const string_type&  str, const unsigned short lev
  *
  *
  */
-HandlerPtr StreamHandler::log( const wstring_type&  str, const unsigned short level )
+template<class DERIVED>
+HandlerPtr StreamHandler<DERIVED>::log( const wstring_type&  str, const unsigned short level )
 {
+    const std::unique_lock<decltype( mtx )>( mtx );
+
     if( level >= m_level )
     {
         m_wout << str << '\n';
