@@ -27,3 +27,5 @@ logger.warning(f % 'at warning')
 logger.error(f % 'at error')
 logger.critical(f % 'at critical')
 
+
+print(vars(pylogging.StdOutHandler))

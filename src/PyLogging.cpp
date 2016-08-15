@@ -36,23 +36,15 @@ BOOST_PYTHON_MODULE( pylogging )
 
 
     class_<Handler, boost::shared_ptr<Handler>, boost::noncopyable>( "Handler", no_init )
-        // no __init__ here, the class is abstract!
+        .def( "__init__", make_constructor( &make_shared_<Handler> ) )
         .def( "set_level", &Handler::setLevel )
         ;
 
-    class_<NullHandler, boost::shared_ptr<NullHandler>, bases<Handler>, boost::noncopyable>( "NullHandler", no_init )
-        .def( "__init__", make_constructor( &make_shared_<NullHandler> ) )
-        ;
-
-    class_<StreamHandler, boost::shared_ptr<StreamHandler>, bases<Handler>, boost::noncopyable>( "StreamHandler", no_init )
-        // no __init__ here, the class is abstract!
-        ;
-
-    class_<StdOutHandler, boost::shared_ptr<StdOutHandler>, bases<StreamHandler>, boost::noncopyable>( "StdOutHandler", no_init )
+    class_<StdOutHandler, boost::shared_ptr<StdOutHandler>, bases<Handler>, boost::noncopyable>( "StdOutHandler", no_init )
         .def( "__init__", make_constructor( &make_shared_<StdOutHandler> ) )
         ;
 
-    class_<StdErrHandler, boost::shared_ptr<StdErrHandler>, bases<StreamHandler>, boost::noncopyable>( "StdErrHandler", no_init )
+    class_<StdErrHandler, boost::shared_ptr<StdErrHandler>, bases<Handler>, boost::noncopyable>( "StdErrHandler", no_init )
        .def( "__init__", make_constructor( &make_shared_<StdErrHandler> ) )
        ;
 
