@@ -23,7 +23,7 @@ public:
     virtual HandlerPtr log( const string_type&  str, const unsigned short level ) = 0;
     virtual HandlerPtr log( const wstring_type& str, const unsigned short level ) = 0;
 
-    virtual void setLevel( const unsigned short level );
+    void setLevel( const unsigned short level );
 
 protected:
     unsigned short m_level = NOTSET;

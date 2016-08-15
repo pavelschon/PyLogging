@@ -10,6 +10,9 @@
 #include "Handler.hpp"
 #include "StreamHandler.hpp"
 
+#include <boost/python.hpp>
+#include <boost/make_shared.hpp>
+
 
 /**
  *
@@ -32,29 +35,28 @@ BOOST_PYTHON_MODULE( pylogging )
     using namespace ::pylogging;
 
 
-    class_<Handler, HandlerPtr, boost::noncopyable>( "Handler", no_init )
+    class_<Handler, boost::shared_ptr<Handler>, boost::noncopyable>( "Handler", no_init )
         // no __init__ here, the class is abstract!
         .def( "set_level", &Handler::setLevel )
         ;
 
-    class_<NullHandler, NullHandlerPtr, bases<Handler>, boost::noncopyable>( "NullHandler", no_init )
+    class_<NullHandler, boost::shared_ptr<NullHandler>, bases<Handler>, boost::noncopyable>( "NullHandler", no_init )
         .def( "__init__", make_constructor( &make_shared_<NullHandler> ) )
         ;
 
-    class_<StreamHandler, StreamHandlerPtr, bases<Handler>, boost::noncopyable>( "StreamHandler", no_init )
+    class_<StreamHandler, boost::shared_ptr<StreamHandler>, bases<Handler>, boost::noncopyable>( "StreamHandler", no_init )
         // no __init__ here, the class is abstract!
         ;
 
-    class_<StdOutHandler, StdOutHandlerPtr, bases<StreamHandler>, boost::noncopyable>( "StdOutHandler", no_init )
+    class_<StdOutHandler, boost::shared_ptr<StdOutHandler>, bases<StreamHandler>, boost::noncopyable>( "StdOutHandler", no_init )
         .def( "__init__", make_constructor( &make_shared_<StdOutHandler> ) )
         ;
 
-    class_<StdErrHandler, StdErrHandlerPtr, bases<StreamHandler>, boost::noncopyable>( "StdErrHandler", no_init )
+    class_<StdErrHandler, boost::shared_ptr<StdErrHandler>, bases<StreamHandler>, boost::noncopyable>( "StdErrHandler", no_init )
        .def( "__init__", make_constructor( &make_shared_<StdErrHandler> ) )
        ;
 
-    class_<Logger, LoggerPtr, boost::noncopyable>( "Logger", no_init )
-        .def( "__init__",       make_constructor( &make_shared_<Logger> ) )
+    class_<Logger, boost::noncopyable>( "Logger", init<>() )
         .def( "__contains__",   &Logger::hasHandler )
         .def( "add_handler",    &Logger::addHandler )
         .def( "remove_handler", &Logger::removeHandler )

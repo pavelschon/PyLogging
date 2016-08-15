@@ -8,6 +8,8 @@
 #include "Logger.hpp"
 #include "Handler.hpp"
 
+#include <boost/python/errors.hpp>
+
 
 namespace pylogging
 {

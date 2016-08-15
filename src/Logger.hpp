@@ -10,6 +10,8 @@
 
 #include "PyLogging.hpp"
 
+#include <set>
+
 
 namespace pylogging
 {
@@ -17,11 +19,9 @@ namespace pylogging
 bool operator<( const HandlerPtr& lhs, const HandlerPtr& rhs );
 
 
-class Logger: public boost::enable_shared_from_this<Logger>
+class Logger: public boost::noncopyable
 {
 public:
-    LoggerPtr operator<<( const std::string& msg );
-
     void addHandler( const HandlerPtr& handler );
     void removeHandler( const HandlerPtr& handler );
     bool hasHandler( const HandlerPtr& handler ) const;

@@ -10,6 +10,8 @@
 
 #include "Handler.hpp"
 
+#include <iostream>
+
 
 namespace pylogging
 {
