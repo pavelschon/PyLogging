@@ -29,7 +29,7 @@ public:
     void setLevel( const unsigned short level );
 
     template<class FORMAT, int LEVEL>
-    void log( const FORMAT& fmt );
+    void log( FORMAT& fmt );
 
 private:
     std::set<HandlerPtr> handlers;
