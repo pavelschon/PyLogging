@@ -7,15 +7,13 @@
 
 #include "Handler.hpp"
 
-#include <iostream>
-
-
-std::mutex stdout_mtx;
-std::mutex stderr_mtx;
-
 
 namespace pylogging
 {
+
+std::mutex stdout_mtx;
+std::mutex stderr_mtx;
+std::mutex stdlog_mtx;
 
 
 /**
@@ -44,7 +42,7 @@ void Handler::setLevel( const unsigned short level )
  *
  *
  */
-HandlerPtr NullHandler::log( const wstring_type& str, const unsigned short level )
+HandlerPtr NullHandler::log( const wstring& wstr, const unsigned short level )
 {
     return shared_from_this();
 }
@@ -54,7 +52,7 @@ HandlerPtr NullHandler::log( const wstring_type& str, const unsigned short level
  *
  *
  */
-HandlerPtr StdOutHandler::log( const wstring_type& str, const unsigned short level )
+HandlerPtr StdOutHandler::log( const wstring& wstr, const unsigned short level )
 {
     const scoped_lock lock( mtx );
 
@@ -62,7 +60,7 @@ HandlerPtr StdOutHandler::log( const wstring_type& str, const unsigned short lev
     {
         const scoped_lock stream_lock( stdout_mtx );
 
-        std::wcout << str << '\n';
+        std::wcout << wstr << '\n';
     }
 
     return shared_from_this();
@@ -73,7 +71,7 @@ HandlerPtr StdOutHandler::log( const wstring_type& str, const unsigned short lev
  *
  *
  */
-HandlerPtr StdErrHandler::log( const wstring_type& str, const unsigned short level )
+HandlerPtr StdErrHandler::log( const wstring& wstr, const unsigned short level )
 {
     const scoped_lock lock( mtx );
 
@@ -81,7 +79,7 @@ HandlerPtr StdErrHandler::log( const wstring_type& str, const unsigned short lev
     {
         const scoped_lock stream_lock( stderr_mtx );
 
-        std::wcerr << str << '\n';
+        std::wcerr << wstr << '\n';
     }
 
     return shared_from_this();
@@ -92,7 +90,26 @@ HandlerPtr StdErrHandler::log( const wstring_type& str, const unsigned short lev
  *
  *
  */
-FileHandler::FileHandler( const char* const filename )
+HandlerPtr StdLogHandler::log( const wstring& wstr, const unsigned short level )
+{
+    const scoped_lock lock( mtx );
+
+    if( level >= m_level )
+    {
+        const scoped_lock stream_lock( stdlog_mtx );
+
+        std::wclog << wstr << '\n';
+    }
+
+    return shared_from_this();
+}
+
+
+/**
+ *
+ *
+ */
+FileHandler::FileHandler()
 {
 
 }
@@ -102,7 +119,18 @@ FileHandler::FileHandler( const char* const filename )
  *
  *
  */
-HandlerPtr FileHandler::log( const wstring_type& str, const unsigned short level )
+FileHandler::FileHandler( const char* const filename ):
+    wout{ std::make_unique<std::wofstream>( filename ) }
+{
+
+}
+
+
+/**
+ *
+ *
+ */
+HandlerPtr FileHandler::log( const wstring& wstr, const unsigned short level )
 {
     const scoped_lock lock( mtx );
 
@@ -110,10 +138,38 @@ HandlerPtr FileHandler::log( const wstring_type& str, const unsigned short level
     {
         const scoped_lock file_lock( file_mtx );
 
-        //std::wcout << str << '\n';
+        if( wout )
+        {
+            *wout << wstr << '\n';
+        }
     }
 
     return shared_from_this();
+}
+
+
+
+/**
+ *
+ *
+ */
+void FileHandler::open( const char* const filename )
+{
+    const scoped_lock file_lock( file_mtx );
+
+    wout = std::make_unique<std::wofstream>( filename );
+}
+
+
+/**
+ *
+ *
+ */
+void FileHandler::close()
+{
+    const scoped_lock file_lock( file_mtx );
+
+    wout.reset(); // destructor automatically calls close()
 }
 
 
@@ -128,5 +184,4 @@ bool operator<( const HandlerPtr& lhs, const HandlerPtr& rhs )
 
 
 } /* namespace pylogging */
-
 

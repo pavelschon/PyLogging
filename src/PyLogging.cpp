@@ -9,9 +9,6 @@
 #include "Logger.hpp"
 #include "Handler.hpp"
 
-#include <boost/python.hpp>
-#include <boost/make_shared.hpp>
-
 
 /**
  *
@@ -33,6 +30,8 @@ BOOST_PYTHON_MODULE( pylogging )
     using namespace ::boost::python;
     using namespace ::pylogging;
 
+    std::locale::global(std::locale(""));
+
 
     class_<Handler, boost::shared_ptr<Handler>, boost::noncopyable>( "Handler", no_init )
         .def( "set_level", &Handler::setLevel )
@@ -50,16 +49,31 @@ BOOST_PYTHON_MODULE( pylogging )
        .def( "__init__", make_constructor( &make_shared_<StdErrHandler> ) )
        ;
 
-    class_<Logger, boost::noncopyable>( "Logger", init<>() )
-        .def( "__contains__",   &Logger::hasHandler )
-        .def( "add_handler",    &Logger::addHandler )
-        .def( "remove_handler", &Logger::removeHandler )
-        .def( "set_level",      &Logger::setLevel )
-        .def( "debug",          &Logger::log<DEBUG> )
-        .def( "info",           &Logger::log<INFO> )
-        .def( "warning",        &Logger::log<WARNING> )
-        .def( "error",          &Logger::log<ERROR> )
-        .def( "critical",       &Logger::log<CRITICAL> )
+    class_<StdLogHandler, boost::shared_ptr<StdLogHandler>, bases<Handler>, boost::noncopyable>( "StdLogHandler", no_init )
+        .def( "__init__", make_constructor( &make_shared_<StdLogHandler> ) )
+       ;
+
+    class_<FileHandler, boost::shared_ptr<FileHandler>, bases<Handler>, boost::noncopyable>( "FileHandler", no_init )
+       .def( "__init__", make_constructor( &make_shared_<FileHandler, const char*> ) )
+       .def( "open",  &FileHandler::open )
+       .def( "close", &FileHandler::close )
+       ;
+
+    class_<Logger, boost::noncopyable>( "Logger", init<>()   )
+        .def( "__contains__",   &Logger::hasHandler          )
+        .def( "add_handler",    &Logger::addHandler          )
+        .def( "remove_handler", &Logger::removeHandler       )
+        .def( "set_level",      &Logger::setLevel            )
+        .def( "debug",          &Logger::logObject<DEBUG>    )
+        .def( "debug",          &Logger::logFormat<DEBUG>    )
+        .def( "info",           &Logger::logObject<INFO>     )
+        .def( "info",           &Logger::logFormat<INFO>     )
+        .def( "warning",        &Logger::logObject<WARNING>  )
+        .def( "warning",        &Logger::logFormat<WARNING>  )
+        .def( "error",          &Logger::logObject<ERROR>    )
+        .def( "error",          &Logger::logFormat<ERROR>    )
+        .def( "critical",       &Logger::logObject<CRITICAL> )
+        .def( "critical",       &Logger::logFormat<CRITICAL> )
         ;
 
     enum_<LogLevel>( "LogLevel" )

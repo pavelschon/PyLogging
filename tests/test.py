@@ -11,20 +11,18 @@ from pylogging import LogLevel
 from pyformat import Format as F
 
 
-f = F('test log %||')
+handler = pylogging.StdLogHandler()
+fhandler = pylogging.FileHandler('bla')
 
-
-
-handler = pylogging.StdErrHandler()
 logger = pylogging.Logger()
 
-logger.add_handler(handler)
+logger.add_handler(fhandler)
 
-logging.basicConfig(level=logging.INFO, format='%(message)s')
+#logging.basicConfig(level=logging.INFO, format='%(message)s')
 
 
 def runThread(i):
-    fmt = F('thread ščřž %||: %||')
+    fmt = F(u'thread ščřž %||: %||')
 
     def thread():
         for x in range(1000):
@@ -49,3 +47,4 @@ for i in range(10):
 for t in threads:
     t.join()
 
+    

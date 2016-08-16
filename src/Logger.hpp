@@ -10,8 +10,6 @@
 
 #include "PyLogging.hpp"
 
-#include <set>
-
 
 namespace pylogging
 {
@@ -25,11 +23,10 @@ public:
     void addHandler( const HandlerPtr& handler );
     void removeHandler( const HandlerPtr& handler );
     bool hasHandler( const HandlerPtr& handler ) const;
-
     void setLevel( const unsigned short level );
 
-    template<int LEVEL>
-    void log( wformat& fmt );
+    template<int LEVEL> void logFormat( wformat& fmt );
+    template<int LEVEL> void logObject( object&  obj );
 
 private:
     std::set<HandlerPtr> handlers;

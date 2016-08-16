@@ -10,16 +10,28 @@
 
 #include <boost/format.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include <boost/noncopyable.hpp>
+#include <boost/enable_shared_from_this.hpp>
+#include <boost/python.hpp>
 
+#include <fstream>
+#include <iostream>
+#include <memory>
+#include <locale>
 #include <mutex>
+#include <set>
 
 
 namespace pylogging
 {
 
+namespace py       = boost::python;
+
 using wformat      = boost::wformat;
+using wstring      = boost::wformat::string_type;
 using wstring_type = boost::wformat::string_type;
+using object       = boost::python::object;
 
 using HandlerPtr   = boost::shared_ptr<class Handler>;
 using scoped_lock  = std::unique_lock<std::mutex>;

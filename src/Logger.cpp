@@ -78,17 +78,17 @@ void Logger::setLevel( const unsigned short level )
  *
  */
 template<int LEVEL>
-void Logger::log( wformat& fmt )
+void Logger::logFormat( wformat& fmt )
 {
     const scoped_lock lock( mtx );
 
     if( LEVEL >= m_level )
     {
-        const wstring_type& str = fmt.str();
+        const wstring& wstr = fmt.str();
 
         for( const HandlerPtr& handler : handlers )
         {
-            handler->log( str, LEVEL );
+            handler->log( wstr, LEVEL );
         }
     }
     else
@@ -98,12 +98,36 @@ void Logger::log( wformat& fmt )
 }
 
 
-template void Logger::log<NOTSET>  ( boost::wformat& fmt );
-template void Logger::log<DEBUG>   ( boost::wformat& fmt );
-template void Logger::log<INFO>    ( boost::wformat& fmt );
-template void Logger::log<WARNING> ( boost::wformat& fmt );
-template void Logger::log<ERROR>   ( boost::wformat& fmt );
-template void Logger::log<CRITICAL>( boost::wformat& fmt );
+template<int LEVEL>
+void Logger::logObject( object& obj )
+{
+    const scoped_lock lock( mtx );
+
+    if( LEVEL >= m_level )
+    {
+        const wstring wstr = py::extract<wstring>( py::str( obj ) );
+
+        for( const HandlerPtr& handler : handlers )
+        {
+            handler->log( wstr, LEVEL );
+        }
+    }
+}
+
+
+template void Logger::logFormat<NOTSET>  ( wformat& fmt );
+template void Logger::logFormat<DEBUG>   ( wformat& fmt );
+template void Logger::logFormat<INFO>    ( wformat& fmt );
+template void Logger::logFormat<WARNING> ( wformat& fmt );
+template void Logger::logFormat<ERROR>   ( wformat& fmt );
+template void Logger::logFormat<CRITICAL>( wformat& fmt );
+
+template void Logger::logObject<NOTSET>  ( object& obj );
+template void Logger::logObject<DEBUG>   ( object& obj );
+template void Logger::logObject<INFO>    ( object& obj );
+template void Logger::logObject<WARNING> ( object& obj );
+template void Logger::logObject<ERROR>   ( object& obj );
+template void Logger::logObject<CRITICAL>( object& obj );
 
 
 } /* namespace pylogging */
