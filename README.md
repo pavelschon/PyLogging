@@ -1,14 +1,10 @@
 # PyFormat - boost::format python module #
 
-**PyFormat** is fast string formatting module, which exposes **boost::format** class to Python.
+**PyLogging** is fast and lightweight logging module and can be used together with PyFormat module.
 
-Please refer to **boost::format** documentation to explore all formatting capabilities.
+The module is low-level and does not offer features like *lineno*, *asctime* etc.
 
-The module is compatible with Python 2.x and Python 3.x versions:
-
-- In Python 2.x the module exposes **Format** and **UFormat** classes (*str* and *unicode*)
-
-- In Python 3.x the module exposes **Format** class only (*str*, which is de facto *unicode*)
+The module is thread-safe and is compatible with Python 2.x and Python 3.x versions.
 
 
 ## Requirements ##
@@ -29,17 +25,30 @@ $ mkdir build
 $ cd build
 $ cmake ..
 $ make package
-$ dpkg -i pyformat-0.1.0-Linux.deb
+$ dpkg -i pylogging-0.1.0-Linux.deb
 ```
+
+## Logger ##
+
+*Logger* can have zero or more handlers attached. *Handler* can be attached multiple loggers.
+
+## Handlers ##
+
+1. *NullHandler* - no output
+
+2. *StdOutHandler* - output to std::wout
+
+2. *StdErrHandler* - output to std::werr
+
+3. *StdLogHandler* - output to std::wlog
+
+4. *FileHandler* - output to std::wofstream
+
+Output in the handler is synchronized using mutex.
 
 ## Run ##
 
-Format object can be reused after it has been evaluated. Passing less or more arguments will raise ValueError.
+
 ```
->>> from pyformat import Format as F
->>> f = F('%|| %|| %||')
->>> print( f % 'a' % 'b' % 'c' )
-a b c
->>> print( f % 1 % 2 % 3 )
-1 2 3
+FIXME
 ```
