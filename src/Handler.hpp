@@ -22,7 +22,6 @@ class Handler: public boost::enable_shared_from_this<Handler>, public boost::non
 public:
     virtual ~Handler();
 
-    virtual HandlerPtr log( const string_type&  str, const unsigned short level ) = 0;
     virtual HandlerPtr log( const wstring_type& str, const unsigned short level ) = 0;
 
     void setLevel( const unsigned short level );
@@ -37,8 +36,33 @@ protected:
 class NullHandler: public Handler
 {
 public:
-    HandlerPtr log( const string_type&  str, const unsigned short level );
     HandlerPtr log( const wstring_type& str, const unsigned short level );
+};
+
+
+class StdOutHandler: public Handler
+{
+public:
+    HandlerPtr log( const wstring_type& str, const unsigned short level );
+};
+
+
+class StdErrHandler: public Handler
+{
+public:
+    HandlerPtr log( const wstring_type& str, const unsigned short level );
+};
+
+
+class FileHandler: public Handler
+{
+public:
+    explicit FileHandler( const char* const filename );
+
+    HandlerPtr log( const wstring_type& str, const unsigned short level );
+
+private:
+    std::mutex file_mtx;
 };
 
 

@@ -8,7 +8,6 @@
 #include "PyLogging.hpp"
 #include "Logger.hpp"
 #include "Handler.hpp"
-#include "StreamHandler.hpp"
 
 #include <boost/python.hpp>
 #include <boost/make_shared.hpp>
@@ -56,16 +55,11 @@ BOOST_PYTHON_MODULE( pylogging )
         .def( "add_handler",    &Logger::addHandler )
         .def( "remove_handler", &Logger::removeHandler )
         .def( "set_level",      &Logger::setLevel )
-        .def( "debug",          &Logger::log<boost::format,  DEBUG> )
-        .def( "debug",          &Logger::log<boost::wformat, DEBUG> )
-        .def( "info",           &Logger::log<boost::format,  INFO> )
-        .def( "info",           &Logger::log<boost::wformat, INFO> )
-        .def( "warning",        &Logger::log<boost::format,  WARNING> )
-        .def( "warning",        &Logger::log<boost::wformat, WARNING> )
-        .def( "error",          &Logger::log<boost::format,  ERROR> )
-        .def( "error",          &Logger::log<boost::wformat, ERROR> )
-        .def( "critical",       &Logger::log<boost::format,  CRITICAL> )
-        .def( "critical",       &Logger::log<boost::wformat, CRITICAL> )
+        .def( "debug",          &Logger::log<DEBUG> )
+        .def( "info",           &Logger::log<INFO> )
+        .def( "warning",        &Logger::log<WARNING> )
+        .def( "error",          &Logger::log<ERROR> )
+        .def( "critical",       &Logger::log<CRITICAL> )
         ;
 
     enum_<LogLevel>( "LogLevel" )

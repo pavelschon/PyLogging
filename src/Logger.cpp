@@ -77,14 +77,14 @@ void Logger::setLevel( const unsigned short level )
  *
  *
  */
-template<class FORMAT, int LEVEL>
-void Logger::log( FORMAT& fmt )
+template<int LEVEL>
+void Logger::log( wformat& fmt )
 {
     const scoped_lock lock( mtx );
 
     if( LEVEL >= m_level )
     {
-        const typename FORMAT::string_type& str = fmt.str();
+        const wstring_type& str = fmt.str();
 
         for( const HandlerPtr& handler : handlers )
         {
@@ -98,23 +98,12 @@ void Logger::log( FORMAT& fmt )
 }
 
 
-template void Logger::log<boost::format,  NOTSET>  ( boost::format&  fmt );
-template void Logger::log<boost::wformat, NOTSET>  ( boost::wformat& fmt );
-
-template void Logger::log<boost::format,  DEBUG>   ( boost::format&  fmt );
-template void Logger::log<boost::wformat, DEBUG>   ( boost::wformat& fmt );
-
-template void Logger::log<boost::format,  INFO>    ( boost::format&  fmt );
-template void Logger::log<boost::wformat, INFO>    ( boost::wformat& fmt );
-
-template void Logger::log<boost::format,  WARNING> ( boost::format&  fmt );
-template void Logger::log<boost::wformat, WARNING> ( boost::wformat& fmt );
-
-template void Logger::log<boost::format,  ERROR>   ( boost::format&  fmt );
-template void Logger::log<boost::wformat, ERROR>   ( boost::wformat& fmt );
-
-template void Logger::log<boost::format,  CRITICAL>( boost::format&  fmt );
-template void Logger::log<boost::wformat, CRITICAL>( boost::wformat& fmt );
+template void Logger::log<NOTSET>  ( boost::wformat& fmt );
+template void Logger::log<DEBUG>   ( boost::wformat& fmt );
+template void Logger::log<INFO>    ( boost::wformat& fmt );
+template void Logger::log<WARNING> ( boost::wformat& fmt );
+template void Logger::log<ERROR>   ( boost::wformat& fmt );
+template void Logger::log<CRITICAL>( boost::wformat& fmt );
 
 
 } /* namespace pylogging */

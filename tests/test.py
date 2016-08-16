@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import time
+import threading
+import logging
+
 import pylogging
 
 from pylogging import LogLevel
@@ -11,21 +15,37 @@ f = F('test log %||')
 
 
 
-handler = pylogging.StdOutHandler()
-handler2 = pylogging.StdOutHandler()
+handler = pylogging.StdErrHandler()
 logger = pylogging.Logger()
 
 logger.add_handler(handler)
-logger.add_handler(handler2)
 
-handler.set_level(LogLevel.INFO)
-
-logger.debug(f % 'at debug')
-logger.info(f % 'at info')
-logger.remove_handler(handler2)
-logger.warning(f % 'at warning')
-logger.error(f % 'at error')
-logger.critical(f % 'at critical')
+logging.basicConfig(level=logging.INFO, format='%(message)s')
 
 
-print(vars(pylogging.StdOutHandler))
+def runThread(i):
+    fmt = F('thread ščřž %||: %||')
+
+    def thread():
+        for x in range(1000):
+            #logging.info('thread %s: %s', i, x )
+            #print('thread %s: %s' % (i, x ) )
+            #print(fmt % i % x)
+            logger.info(fmt % i % x)
+
+
+    return thread
+
+
+threads = []
+
+for i in range(10):
+    t = threading.Thread(target=runThread(i))
+    t.start()
+
+    threads.append(t)
+
+
+for t in threads:
+    t.join()
+

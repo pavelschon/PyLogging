@@ -22,25 +22,6 @@ std::mutex stderr_mtx;
  *
  *
  */
-HandlerPtr StdOutHandler::log( const string_type& str, const unsigned short level )
-{
-    const scoped_lock lock( mtx );
-
-    if( level >= m_level )
-    {
-        const scoped_lock stream_lock( stdout_mtx );
-
-        std::cout << str << '\n';
-    }
-
-    return shared_from_this();
-}
-
-
-/**
- *
- *
- */
 HandlerPtr StdOutHandler::log( const wstring_type& str, const unsigned short level )
 {
     const scoped_lock lock( mtx );
@@ -50,25 +31,6 @@ HandlerPtr StdOutHandler::log( const wstring_type& str, const unsigned short lev
         const scoped_lock stream_lock( stdout_mtx );
 
         std::wcout << str << '\n';
-    }
-
-    return shared_from_this();
-}
-
-
-/**
- *
- *
- */
-HandlerPtr StdErrHandler::log( const string_type& str, const unsigned short level )
-{
-    const scoped_lock lock( mtx );
-
-    if( level >= m_level )
-    {
-        const scoped_lock stream_lock( stderr_mtx );
-
-        std::cerr << str << '\n';
     }
 
     return shared_from_this();

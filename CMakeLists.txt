@@ -13,7 +13,7 @@ set( CMAKE_VERBOSE_MAKEFILE OFF )
 add_compile_options( -Wall )
 add_compile_options( -pedantic )
 add_compile_options( -fPIC )
-add_compile_options( -std=c++11 )
+add_compile_options( -std=c++14 )
 
 find_package( PythonLibs "3" )
 find_package( PythonInterp "3" )
@@ -51,7 +51,6 @@ add_library( pylogging SHARED
     src/PyLogging.cpp
     src/Logger.cpp
     src/Handler.cpp
-    src/StreamHandler.cpp
 )
 
 # remove 'lib' prefix

@@ -18,13 +18,11 @@
 namespace pylogging
 {
 
-typedef boost::shared_ptr<class Handler> HandlerPtr;
+using wformat      = boost::wformat;
+using wstring_type = boost::wformat::string_type;
 
-typedef boost::format::string_type  string_type;
-typedef boost::wformat::string_type wstring_type;
-
-typedef std::unique_lock<std::mutex> scoped_lock;
-
+using HandlerPtr   = boost::shared_ptr<class Handler>;
+using scoped_lock  = std::unique_lock<std::mutex>;
 
 enum LogLevel
 {

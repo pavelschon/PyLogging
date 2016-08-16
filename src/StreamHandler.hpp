@@ -18,7 +18,6 @@ namespace pylogging
 class StdOutHandler: public Handler
 {
 public:
-    HandlerPtr log( const string_type&  str, const unsigned short level );
     HandlerPtr log( const wstring_type& str, const unsigned short level );
 };
 
@@ -26,7 +25,6 @@ public:
 class StdErrHandler: public Handler
 {
 public:
-    HandlerPtr log( const string_type&  str, const unsigned short level );
     HandlerPtr log( const wstring_type& str, const unsigned short level );
 };
 
