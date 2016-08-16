@@ -1,4 +1,4 @@
-# PyFormat - boost::format python module #
+# PyLogging - fast python logging #
 
 **PyLogging** is fast and lightweight logging module and can be used together with PyFormat module.
 
