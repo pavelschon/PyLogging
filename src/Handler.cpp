@@ -28,6 +28,8 @@ Handler::~Handler()
  */
 void Handler::setLevel( const unsigned short level )
 {
+    const scoped_lock lock( mtx );
+
     m_level = level;
 }
 

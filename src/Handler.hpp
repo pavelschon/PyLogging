@@ -27,6 +27,8 @@ public:
 
 protected:
     unsigned short m_level = NOTSET;
+
+    mutable std::mutex mtx;
 };
 
 

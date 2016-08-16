@@ -10,42 +10,24 @@
 
 #include "Handler.hpp"
 
-#include <iostream>
-#include <mutex>
-
 
 namespace pylogging
 {
 
 
-template<class DERIVED>
-class StreamHandler: public Handler
+class StdOutHandler: public Handler
 {
 public:
-    StreamHandler( std::ostream& out, std::wostream& wout );
-
     HandlerPtr log( const string_type&  str, const unsigned short level );
     HandlerPtr log( const wstring_type& str, const unsigned short level );
-
-private:
-    std::ostream&  m_out;
-    std::wostream& m_wout;
-
-    static std::mutex mtx; // must be static
 };
 
 
-class StdOutHandler: public StreamHandler<StdOutHandler>
+class StdErrHandler: public Handler
 {
-    public:
-        StdOutHandler();
-};
-
-
-class StdErrHandler: public StreamHandler<StdErrHandler>
-{
-    public:
-        StdErrHandler();
+public:
+    HandlerPtr log( const string_type&  str, const unsigned short level );
+    HandlerPtr log( const wstring_type& str, const unsigned short level );
 };
 
 

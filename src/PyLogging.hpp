@@ -13,6 +13,8 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/noncopyable.hpp>
 
+#include <mutex>
+
 
 namespace pylogging
 {
@@ -21,6 +23,8 @@ typedef boost::shared_ptr<class Handler> HandlerPtr;
 
 typedef boost::format::string_type  string_type;
 typedef boost::wformat::string_type wstring_type;
+
+typedef std::unique_lock<std::mutex> scoped_lock;
 
 
 enum LogLevel

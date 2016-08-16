@@ -35,6 +35,8 @@ private:
     std::set<HandlerPtr> handlers;
 
     unsigned short m_level = NOTSET;
+
+    mutable std::mutex mtx;
 };
 
 

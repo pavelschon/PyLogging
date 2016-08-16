@@ -21,6 +21,8 @@ namespace pylogging
  */
 void Logger::addHandler( const HandlerPtr& handler )
 {
+    const scoped_lock lock( mtx );
+
     if( ! handlers.insert( handler ).second )
     {
         PyErr_SetString( PyExc_ValueError, "handler already exists");
@@ -36,6 +38,8 @@ void Logger::addHandler( const HandlerPtr& handler )
  */
 void Logger::removeHandler( const HandlerPtr& handler )
 {
+    const scoped_lock lock( mtx );
+
     if( ! handlers.erase( handler ) )
     {
         PyErr_SetString( PyExc_ValueError, "handler does not exists");
@@ -51,6 +55,8 @@ void Logger::removeHandler( const HandlerPtr& handler )
  */
 bool Logger::hasHandler( const HandlerPtr& handler ) const
 {
+    const scoped_lock lock( mtx );
+
     return handlers.count( handler );
 }
 
@@ -61,6 +67,8 @@ bool Logger::hasHandler( const HandlerPtr& handler ) const
  */
 void Logger::setLevel( const unsigned short level )
 {
+    const scoped_lock lock( mtx );
+
     m_level = level;
 }
 
@@ -72,6 +80,8 @@ void Logger::setLevel( const unsigned short level )
 template<class FORMAT, int LEVEL>
 void Logger::log( FORMAT& fmt )
 {
+    const scoped_lock lock( mtx );
+
     if( LEVEL >= m_level )
     {
         const typename FORMAT::string_type& str = fmt.str();

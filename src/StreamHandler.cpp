@@ -7,39 +7,29 @@
 
 #include "StreamHandler.hpp"
 
+#include <iostream>
+
 
 namespace pylogging
 {
 
-std::mutex cout_mtx;
-std::mutex cerr_mtx;
-
-/**
- *
- *
- */
-template<class DERIVED>
-StreamHandler<DERIVED>::StreamHandler( std::ostream& out, std::wostream& wout ):
-      Handler()
-    , m_out{ out }
-    , m_wout{ wout }
-{
-
-}
+std::mutex stdout_mtx;
+std::mutex stderr_mtx;
 
 
 /**
  *
  *
  */
-template<class DERIVED>
-HandlerPtr StreamHandler<DERIVED>::log( const string_type&  str, const unsigned short level )
+HandlerPtr StdOutHandler::log( const string_type& str, const unsigned short level )
 {
-    const std::unique_lock<decltype( mtx )>( mtx );
+    const scoped_lock lock( mtx );
 
     if( level >= m_level )
     {
-        m_out << str << '\n';
+        const scoped_lock stream_lock( stdout_mtx );
+
+        std::cout << str << '\n';
     }
 
     return shared_from_this();
@@ -50,28 +40,37 @@ HandlerPtr StreamHandler<DERIVED>::log( const string_type&  str, const unsigned 
  *
  *
  */
-template<class DERIVED>
-HandlerPtr StreamHandler<DERIVED>::log( const wstring_type&  str, const unsigned short level )
+HandlerPtr StdOutHandler::log( const wstring_type& str, const unsigned short level )
 {
-    const std::unique_lock<decltype( mtx )>( mtx );
+    const scoped_lock lock( mtx );
 
     if( level >= m_level )
     {
-        m_wout << str << '\n';
+        const scoped_lock stream_lock( stdout_mtx );
+
+        std::wcout << str << '\n';
     }
 
     return shared_from_this();
 }
 
 
-
 /**
  *
  *
  */
-StdOutHandler::StdOutHandler(): StreamHandler( std::cout, std::wcout )
+HandlerPtr StdErrHandler::log( const string_type& str, const unsigned short level )
 {
+    const scoped_lock lock( mtx );
 
+    if( level >= m_level )
+    {
+        const scoped_lock stream_lock( stderr_mtx );
+
+        std::cerr << str << '\n';
+    }
+
+    return shared_from_this();
 }
 
 
@@ -79,9 +78,18 @@ StdOutHandler::StdOutHandler(): StreamHandler( std::cout, std::wcout )
  *
  *
  */
-StdErrHandler::StdErrHandler(): StreamHandler( std::cerr, std::wcerr )
+HandlerPtr StdErrHandler::log( const wstring_type& str, const unsigned short level )
 {
+    const scoped_lock lock( mtx );
 
+    if( level >= m_level )
+    {
+        const scoped_lock stream_lock( stderr_mtx );
+
+        std::wcerr << str << '\n';
+    }
+
+    return shared_from_this();
 }
 
 
