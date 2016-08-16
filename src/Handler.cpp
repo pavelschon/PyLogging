@@ -38,7 +38,7 @@ void Handler::setLevel( const unsigned short level )
  *
  *
  */
-HandlerPtr Handler::log( const string_type& str, const unsigned short level )
+HandlerPtr NullHandler::log( const string_type& str, const unsigned short level )
 {
     return shared_from_this();
 }
@@ -48,7 +48,7 @@ HandlerPtr Handler::log( const string_type& str, const unsigned short level )
  *
  *
  */
-HandlerPtr Handler::log( const wstring_type& str, const unsigned short level )
+HandlerPtr NullHandler::log( const wstring_type& str, const unsigned short level )
 {
     return shared_from_this();
 }

@@ -8,6 +8,7 @@
 #include "StreamHandler.hpp"
 
 #include <iostream>
+#include <mutex>
 
 
 namespace pylogging

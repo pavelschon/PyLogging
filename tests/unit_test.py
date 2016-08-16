@@ -15,7 +15,7 @@ import pylogging
 
 class PyLoggingTest(unittest.TestCase):
     def testAddRemoveHandler(self):
-        handler  = pylogging.Handler()
+        handler  = pylogging.NullHandler()
         logger   = pylogging.Logger()
 
         logger.add_handler(handler)

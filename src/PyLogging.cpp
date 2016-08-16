@@ -36,8 +36,11 @@ BOOST_PYTHON_MODULE( pylogging )
 
 
     class_<Handler, boost::shared_ptr<Handler>, boost::noncopyable>( "Handler", no_init )
-        .def( "__init__", make_constructor( &make_shared_<Handler> ) )
         .def( "set_level", &Handler::setLevel )
+        ;
+
+    class_<NullHandler, boost::shared_ptr<NullHandler>, bases<Handler>, boost::noncopyable>( "NullHandler", no_init )
+        .def( "__init__", make_constructor( &make_shared_<NullHandler> ) )
         ;
 
     class_<StdOutHandler, boost::shared_ptr<StdOutHandler>, bases<Handler>, boost::noncopyable>( "StdOutHandler", no_init )

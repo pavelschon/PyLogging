@@ -10,6 +10,8 @@
 
 #include "PyLogging.hpp"
 
+#include <boost/enable_shared_from_this.hpp>
+
 
 namespace pylogging
 {
@@ -20,8 +22,8 @@ class Handler: public boost::enable_shared_from_this<Handler>, public boost::non
 public:
     virtual ~Handler();
 
-    virtual HandlerPtr log( const string_type&  str, const unsigned short level );
-    virtual HandlerPtr log( const wstring_type& str, const unsigned short level );
+    virtual HandlerPtr log( const string_type&  str, const unsigned short level ) = 0;
+    virtual HandlerPtr log( const wstring_type& str, const unsigned short level ) = 0;
 
     void setLevel( const unsigned short level );
 
@@ -29,6 +31,14 @@ protected:
     unsigned short m_level = NOTSET;
 
     mutable std::mutex mtx;
+};
+
+
+class NullHandler: public Handler
+{
+public:
+    HandlerPtr log( const string_type&  str, const unsigned short level );
+    HandlerPtr log( const wstring_type& str, const unsigned short level );
 };
 
 
