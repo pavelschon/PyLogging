@@ -24,15 +24,12 @@ logger.add_handler(handler)
 
 def runThread(i):
     fmt = U('thread ščřž %||: %||')
-    fmt2 = F(b'thread native %||: %||')
+    fmt2 = F('thread ščřž xx %||: %||'.encode('utf-8'))
 
     def thread():
         for x in range(100):
-            #logging.info('thread %s: %s', i, x )
-            #print('thread %s: %s' % (i, x ) )
-            #print(fmt % i % x)
             logger.info(fmt2 % i % x)
-            #logger.info('ěš+ěš')
+            logger.info(fmt % i % x)
 
 
     return thread

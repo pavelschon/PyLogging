@@ -32,7 +32,6 @@ BOOST_PYTHON_MODULE( pylogging )
 
     std::locale::global(std::locale(""));
 
-
     class_<Handler, boost::shared_ptr<Handler>, boost::noncopyable>( "Handler", no_init )
         .def( "set_level", &Handler::setLevel )
         ;
@@ -66,19 +65,19 @@ BOOST_PYTHON_MODULE( pylogging )
         .def( "set_level",      &Logger::setLevel            )
         .def( "debug",          &Logger::logObject<DEBUG>    )
         .def( "debug",          &Logger::logFormat<DEBUG>    )
-        .def( "debug",          &Logger::logWFormat<DEBUG>    )
+        .def( "debug",          &Logger::logWFormat<DEBUG>   )
         .def( "info",           &Logger::logObject<INFO>     )
         .def( "info",           &Logger::logFormat<INFO>     )
-        .def( "info",           &Logger::logWFormat<INFO>     )
+        .def( "info",           &Logger::logWFormat<INFO>    )
         .def( "warning",        &Logger::logObject<WARNING>  )
         .def( "warning",        &Logger::logFormat<WARNING>  )
-        .def( "warning",        &Logger::logWFormat<WARNING>  )
+        .def( "warning",        &Logger::logWFormat<WARNING> )
         .def( "error",          &Logger::logObject<ERROR>    )
         .def( "error",          &Logger::logFormat<ERROR>    )
-        .def( "error",          &Logger::logWFormat<ERROR>    )
+        .def( "error",          &Logger::logWFormat<ERROR>   )
         .def( "critical",       &Logger::logObject<CRITICAL> )
         .def( "critical",       &Logger::logFormat<CRITICAL> )
-        .def( "critical",       &Logger::logWFormat<CRITICAL> )
+        .def( "critical",       &Logger::logWFormat<CRITICAL>)
         ;
 
     enum_<LogLevel>( "LogLevel" )
@@ -95,7 +94,6 @@ BOOST_PYTHON_MODULE( pylogging )
     module.attr( "__doc__"     ) = "PyLogging - fast python logging";
     module.attr( "__author__"  ) = "Pavel Schon <pavel@schon.cz>";
     module.attr( "__version__" ) = "0.1.0";
-
 }
 
 

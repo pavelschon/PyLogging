@@ -27,7 +27,7 @@ public:
 
     template<int LEVEL> void logFormat( format& fmt );
     template<int LEVEL> void logWFormat( wformat& fmt );
-    template<int LEVEL> void logObject( py::object&  obj );
+    template<int LEVEL> void logObject( py::object& obj );
 
 private:
     std::set<HandlerPtr> handlers;

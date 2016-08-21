@@ -92,15 +92,12 @@ void Logger::logFormat( format& fmt )
 {
     if( LEVEL >= m_level )
     {
-#if PY_MAJOR_VERSION < 3
-        const wstring w = py::extract<wstring>( py::str( fmt.str() ).decode( py::encoding ) );
-#else
-        const wstring w = py::extract<wstring>( py::str( fmt.str() ) );
-#endif
+        const string& str = fmt.str();
+        const wstring wstr( str.begin(), str.end() ); // naive conversion
 
         for( const HandlerPtr& handler : handlers )
         {
-            handler->log( w, LEVEL );
+            handler->log( wstr, LEVEL );
         }
     }
     else
@@ -133,15 +130,19 @@ void Logger::logWFormat( wformat& fmt )
 }
 
 
+/**
+ *
+ *
+ */
 template<int LEVEL>
 void Logger::logObject( py::object& obj )
 {
     if( LEVEL >= m_level )
     {
-#if PY_MAJOR_VERSION < 3
-        const wstring wstr = py::extract<wstring>( py::unicode( obj ) );
-#else
+#if PY_MAJOR_VERSION >= 3
         const wstring wstr = py::extract<wstring>( py::str( obj ) );
+#else
+        const wstring wstr = py::extract<wstring>( py::unicode( obj ) );
 #endif
 
         for( const HandlerPtr& handler : handlers )
@@ -151,12 +152,12 @@ void Logger::logObject( py::object& obj )
     }
 }
 
-template void Logger::logFormat<NOTSET>  ( format& fmt );
-template void Logger::logFormat<DEBUG>   ( format& fmt );
-template void Logger::logFormat<INFO>    ( format& fmt );
-template void Logger::logFormat<WARNING> ( format& fmt );
-template void Logger::logFormat<ERROR>   ( format& fmt );
-template void Logger::logFormat<CRITICAL>( format& fmt );
+template void Logger::logFormat<NOTSET>   (  format& fmt );
+template void Logger::logFormat<DEBUG>    (  format& fmt );
+template void Logger::logFormat<INFO>     (  format& fmt );
+template void Logger::logFormat<WARNING>  (  format& fmt );
+template void Logger::logFormat<ERROR>    (  format& fmt );
+template void Logger::logFormat<CRITICAL> (  format& fmt );
 
 template void Logger::logWFormat<NOTSET>  ( wformat& fmt );
 template void Logger::logWFormat<DEBUG>   ( wformat& fmt );
@@ -165,14 +166,13 @@ template void Logger::logWFormat<WARNING> ( wformat& fmt );
 template void Logger::logWFormat<ERROR>   ( wformat& fmt );
 template void Logger::logWFormat<CRITICAL>( wformat& fmt );
 
-template void Logger::logObject<NOTSET>  ( py::object& obj );
-template void Logger::logObject<DEBUG>   ( py::object& obj );
-template void Logger::logObject<INFO>    ( py::object& obj );
-template void Logger::logObject<WARNING> ( py::object& obj );
-template void Logger::logObject<ERROR>   ( py::object& obj );
-template void Logger::logObject<CRITICAL>( py::object& obj );
+template void Logger::logObject<NOTSET>   ( py::object& obj );
+template void Logger::logObject<DEBUG>    ( py::object& obj );
+template void Logger::logObject<INFO>     ( py::object& obj );
+template void Logger::logObject<WARNING>  ( py::object& obj );
+template void Logger::logObject<ERROR>    ( py::object& obj );
+template void Logger::logObject<CRITICAL> ( py::object& obj );
 
 
 } /* namespace pylogging */
-
 
