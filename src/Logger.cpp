@@ -16,8 +16,6 @@ namespace boost
 namespace python
 {
 
-const char* encoding = "utf-8";
-
 #if PY_MAJOR_VERSION < 3
 
 const object builtins = import( "__builtin__" );
@@ -139,10 +137,10 @@ void Logger::logObject( py::object& obj )
 {
     if( LEVEL >= m_level )
     {
-#if PY_MAJOR_VERSION >= 3
-        const wstring wstr = py::extract<wstring>( py::str( obj ) );
-#else
+#if PY_MAJOR_VERSION < 3
         const wstring wstr = py::extract<wstring>( py::unicode( obj ) );
+#else
+        const wstring wstr = py::extract<wstring>( py::str( obj ) );
 #endif
 
         for( const HandlerPtr& handler : handlers )
