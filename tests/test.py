@@ -1,5 +1,7 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+from __future__ import unicode_literals
 
 import time
 import threading
@@ -8,28 +10,29 @@ import logging
 import pylogging
 
 from pylogging import LogLevel
+
+from pyformat import UFormat as U
 from pyformat import Format as F
 
 
 handler = pylogging.StdLogHandler()
-fhandler = pylogging.FileHandler('bla')
 
 logger = pylogging.Logger()
 
-logger.add_handler(fhandler)
-
-#logging.basicConfig(level=logging.INFO, format='%(message)s')
+logger.add_handler(handler)
 
 
 def runThread(i):
-    fmt = F(u'thread ščřž %||: %||')
+    fmt = U('thread ščřž %||: %||')
+    fmt2 = F(b'thread native %||: %||')
 
     def thread():
-        for x in range(1000):
+        for x in range(100):
             #logging.info('thread %s: %s', i, x )
             #print('thread %s: %s' % (i, x ) )
             #print(fmt % i % x)
-            logger.info(fmt % i % x)
+            logger.info(fmt2 % i % x)
+            #logger.info('ěš+ěš')
 
 
     return thread
@@ -46,5 +49,3 @@ for i in range(10):
 
 for t in threads:
     t.join()
-
-    

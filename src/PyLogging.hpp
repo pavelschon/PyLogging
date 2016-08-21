@@ -28,12 +28,15 @@ namespace pylogging
 
 namespace py       = boost::python;
 
+using format       = boost::format;
 using wformat      = boost::wformat;
+
+using  string      = boost::format::string_type;
 using wstring      = boost::wformat::string_type;
 using wstring_type = boost::wformat::string_type;
-using object       = boost::python::object;
 
 using HandlerPtr   = boost::shared_ptr<class Handler>;
+
 using scoped_lock  = std::unique_lock<std::mutex>;
 
 enum LogLevel

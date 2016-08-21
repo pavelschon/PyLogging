@@ -25,15 +25,14 @@ public:
     bool hasHandler( const HandlerPtr& handler ) const;
     void setLevel( const unsigned short level );
 
-    template<int LEVEL> void logFormat( wformat& fmt );
-    template<int LEVEL> void logObject( object&  obj );
+    template<int LEVEL> void logFormat( format& fmt );
+    template<int LEVEL> void logWFormat( wformat& fmt );
+    template<int LEVEL> void logObject( py::object&  obj );
 
 private:
     std::set<HandlerPtr> handlers;
 
     unsigned short m_level = NOTSET;
-
-    mutable std::mutex mtx;
 };
 
 

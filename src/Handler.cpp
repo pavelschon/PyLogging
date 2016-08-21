@@ -32,8 +32,6 @@ Handler::~Handler()
  */
 void Handler::setLevel( const unsigned short level )
 {
-    const scoped_lock lock( mtx );
-
     m_level = level;
 }
 
@@ -54,8 +52,6 @@ HandlerPtr NullHandler::log( const wstring& wstr, const unsigned short level )
  */
 HandlerPtr StdOutHandler::log( const wstring& wstr, const unsigned short level )
 {
-    const scoped_lock lock( mtx );
-
     if( level >= m_level )
     {
         const scoped_lock stream_lock( stdout_mtx );
@@ -73,8 +69,6 @@ HandlerPtr StdOutHandler::log( const wstring& wstr, const unsigned short level )
  */
 HandlerPtr StdErrHandler::log( const wstring& wstr, const unsigned short level )
 {
-    const scoped_lock lock( mtx );
-
     if( level >= m_level )
     {
         const scoped_lock stream_lock( stderr_mtx );
@@ -92,8 +86,6 @@ HandlerPtr StdErrHandler::log( const wstring& wstr, const unsigned short level )
  */
 HandlerPtr StdLogHandler::log( const wstring& wstr, const unsigned short level )
 {
-    const scoped_lock lock( mtx );
-
     if( level >= m_level )
     {
         const scoped_lock stream_lock( stdlog_mtx );
@@ -132,8 +124,6 @@ FileHandler::FileHandler( const char* const filename ):
  */
 HandlerPtr FileHandler::log( const wstring& wstr, const unsigned short level )
 {
-    const scoped_lock lock( mtx );
-
     if( level >= m_level )
     {
         const scoped_lock file_lock( file_mtx );

@@ -10,10 +10,28 @@
 
 #include <boost/python/errors.hpp>
 
+namespace boost
+{
+
+namespace python
+{
+
+const char* encoding = "utf-8";
+
+#if PY_MAJOR_VERSION < 3
+
+const object builtins = import( "__builtin__" );
+const object unicode  = builtins.attr( "unicode" );
+
+#endif
+
+} /* namespace python */
+
+} /* namespace boost */
+
 
 namespace pylogging
 {
-
 
 /**
  *
@@ -21,8 +39,6 @@ namespace pylogging
  */
 void Logger::addHandler( const HandlerPtr& handler )
 {
-    const scoped_lock lock( mtx );
-
     if( ! handlers.insert( handler ).second )
     {
         PyErr_SetString( PyExc_ValueError, "handler already exists");
@@ -38,8 +54,6 @@ void Logger::addHandler( const HandlerPtr& handler )
  */
 void Logger::removeHandler( const HandlerPtr& handler )
 {
-    const scoped_lock lock( mtx );
-
     if( ! handlers.erase( handler ) )
     {
         PyErr_SetString( PyExc_ValueError, "handler does not exists");
@@ -55,8 +69,6 @@ void Logger::removeHandler( const HandlerPtr& handler )
  */
 bool Logger::hasHandler( const HandlerPtr& handler ) const
 {
-    const scoped_lock lock( mtx );
-
     return handlers.count( handler );
 }
 
@@ -67,8 +79,6 @@ bool Logger::hasHandler( const HandlerPtr& handler ) const
  */
 void Logger::setLevel( const unsigned short level )
 {
-    const scoped_lock lock( mtx );
-
     m_level = level;
 }
 
@@ -78,10 +88,35 @@ void Logger::setLevel( const unsigned short level )
  *
  */
 template<int LEVEL>
-void Logger::logFormat( wformat& fmt )
+void Logger::logFormat( format& fmt )
 {
-    const scoped_lock lock( mtx );
+    if( LEVEL >= m_level )
+    {
+#if PY_MAJOR_VERSION < 3
+        const wstring w = py::extract<wstring>( py::str( fmt.str() ).decode( py::encoding ) );
+#else
+        const wstring w = py::extract<wstring>( py::str( fmt.str() ) );
+#endif
 
+        for( const HandlerPtr& handler : handlers )
+        {
+            handler->log( w, LEVEL );
+        }
+    }
+    else
+    {
+        fmt.clear();
+    }
+}
+
+
+/**
+ *
+ *
+ */
+template<int LEVEL>
+void Logger::logWFormat( wformat& fmt )
+{
     if( LEVEL >= m_level )
     {
         const wstring& wstr = fmt.str();
@@ -99,13 +134,15 @@ void Logger::logFormat( wformat& fmt )
 
 
 template<int LEVEL>
-void Logger::logObject( object& obj )
+void Logger::logObject( py::object& obj )
 {
-    const scoped_lock lock( mtx );
-
     if( LEVEL >= m_level )
     {
+#if PY_MAJOR_VERSION < 3
+        const wstring wstr = py::extract<wstring>( py::unicode( obj ) );
+#else
         const wstring wstr = py::extract<wstring>( py::str( obj ) );
+#endif
 
         for( const HandlerPtr& handler : handlers )
         {
@@ -114,20 +151,26 @@ void Logger::logObject( object& obj )
     }
 }
 
+template void Logger::logFormat<NOTSET>  ( format& fmt );
+template void Logger::logFormat<DEBUG>   ( format& fmt );
+template void Logger::logFormat<INFO>    ( format& fmt );
+template void Logger::logFormat<WARNING> ( format& fmt );
+template void Logger::logFormat<ERROR>   ( format& fmt );
+template void Logger::logFormat<CRITICAL>( format& fmt );
 
-template void Logger::logFormat<NOTSET>  ( wformat& fmt );
-template void Logger::logFormat<DEBUG>   ( wformat& fmt );
-template void Logger::logFormat<INFO>    ( wformat& fmt );
-template void Logger::logFormat<WARNING> ( wformat& fmt );
-template void Logger::logFormat<ERROR>   ( wformat& fmt );
-template void Logger::logFormat<CRITICAL>( wformat& fmt );
+template void Logger::logWFormat<NOTSET>  ( wformat& fmt );
+template void Logger::logWFormat<DEBUG>   ( wformat& fmt );
+template void Logger::logWFormat<INFO>    ( wformat& fmt );
+template void Logger::logWFormat<WARNING> ( wformat& fmt );
+template void Logger::logWFormat<ERROR>   ( wformat& fmt );
+template void Logger::logWFormat<CRITICAL>( wformat& fmt );
 
-template void Logger::logObject<NOTSET>  ( object& obj );
-template void Logger::logObject<DEBUG>   ( object& obj );
-template void Logger::logObject<INFO>    ( object& obj );
-template void Logger::logObject<WARNING> ( object& obj );
-template void Logger::logObject<ERROR>   ( object& obj );
-template void Logger::logObject<CRITICAL>( object& obj );
+template void Logger::logObject<NOTSET>  ( py::object& obj );
+template void Logger::logObject<DEBUG>   ( py::object& obj );
+template void Logger::logObject<INFO>    ( py::object& obj );
+template void Logger::logObject<WARNING> ( py::object& obj );
+template void Logger::logObject<ERROR>   ( py::object& obj );
+template void Logger::logObject<CRITICAL>( py::object& obj );
 
 
 } /* namespace pylogging */
